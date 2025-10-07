@@ -11,7 +11,10 @@ const port = process.env.PORT || 3001;
 
 console.log('Loaded DATABASE_URL:', process.env.DATABASE_URL);
 
-app.use(cors());
+app.use(cors({
+  origin: "https://docu-talk-5cgk.vercel.app",
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
