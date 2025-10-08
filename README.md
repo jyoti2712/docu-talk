@@ -106,7 +106,7 @@ docu-talk-ai/
 │   ├── routes/
 │   ├── middleware/
 |   |── db.js
-│   ├── index.js
+│   ├── server.js
 │   └── package.json
 │
 └── README.md
