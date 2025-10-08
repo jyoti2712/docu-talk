@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,6 +18,7 @@ function Chat({ token, documentId, setDocumentId }) {
     setIsUploading(true);
     const formData = new FormData();
     formData.append("file", file);
+
     try {
       const res = await axios.post(`${API_URL}/api/upload`, formData, {
         headers: { "x-auth-token": token, "Content-Type": "multipart/form-data" },
@@ -29,7 +31,6 @@ function Chat({ token, documentId, setDocumentId }) {
       setIsUploading(false);
     }
   };
-
 
   const handleAsk = async () => {
     if (!question || !documentId) return;
@@ -51,45 +52,50 @@ function Chat({ token, documentId, setDocumentId }) {
     }
   };
 
-
   return (
-    <div>
-      <div className="mb-6">
-        <h3 className="font-semibold mb-2 text-lg text-gray-700">1. Upload Document</h3>
-        <div className="flex gap-3 items-center">
-          <input type="file" onChange={handleFileChange} className="text-sm" />
+    <div className="space-y-6">
+      {/* Upload Section */}
+      <div>
+        <h3 className="font-semibold mb-2 text-lg text-gray-700">Upload Document</h3>
+        <div className="flex flex-col sm:flex-row gap-3 items-center">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="text-sm rounded-md w-full sm:w-auto"
+          />
           <button
             onClick={handleUpload}
             disabled={isUploading}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
+            className="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
           >
             {isUploading ? "Uploading..." : "Upload"}
           </button>
         </div>
       </div>
 
+      {/* Chat Section */}
       {documentId && (
         <div>
-          <h3 className="font-semibold mb-2 text-lg text-gray-700">2. Ask a Question</h3>
-          <div className="border rounded-lg h-72 overflow-y-auto p-4 bg-gray-50 mb-4">
+          <h3 className="font-semibold mb-2 text-lg text-gray-700">Ask Your Document</h3>
+          <div className="border rounded-lg h-64 sm:h-72 overflow-y-auto p-3 bg-gray-50 mb-4">
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`mb-3 ${msg.sender === "user" ? "text-right" : "text-left"
-                  }`}
+                className={`mb-3 ${msg.sender === "user" ? "text-right" : "text-left"}`}
               >
-                <span
-                  className={`inline-block px-3 py-2 rounded-lg ${msg.sender === "user"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gray-200 text-gray-800"
-                    }`}
-                >
-                  {msg.text}
-                </span>
+                {msg.sender === "user" ? (
+                  <span className="inline-block px-3 py-2 rounded-lg text-sm sm:text-base bg-indigo-600 text-white">
+                    {msg.text}
+                  </span>
+                ) : (
+                  <div className="inline-block px-3 py-2 rounded-lg bg-gray-200 text-gray-800 text-sm sm:text-base whitespace-pre-wrap">
+                    <ReactMarkdown>{msg.text.trim().replace(/\n{2,}/g, '\n\n')}</ReactMarkdown>
+                  </div>
+                )}
               </div>
             ))}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               value={question}

@@ -1,15 +1,23 @@
 import pg from 'pg';
 import pgvector from 'pgvector/pg';
 import { CohereClient } from "cohere-ai";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const { Pool } = pg;
+
+const dbUrl = new URL(process.env.DATABASE_URL);
+
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  user: dbUrl.username,
+  password: decodeURIComponent(dbUrl.password),
+  host: dbUrl.hostname,
+  port: Number(dbUrl.port),
+  database: dbUrl.pathname.slice(1),
+  ssl: false,
 });
 
-const cohere = new CohereClient({
-  token: process.env.COHERE_API_KEY,
-});
+const cohere = new CohereClient({ token: process.env.COHERE_API_KEY });
 
 export async function getEmbedding(text) {
   const sanitizedText = text.replace(/\x00/g, '');
@@ -22,12 +30,10 @@ export async function getEmbedding(text) {
 }
 
 export async function generateText(prompt) {
-    const response = await cohere.chat({
-        message: prompt,
-    });
-    return response.text;
+  const response = await cohere.chat({ message: prompt });
+  return response.text;
 }
 
 pool.on('connect', async (client) => {
-    await pgvector.registerType(client);
+  await pgvector.registerType(client);
 });

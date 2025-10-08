@@ -30,7 +30,7 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
     let text;
 
     if (mimetype === 'application/pdf') {
-      // ✅ FIX: Use pdf2json to reliably parse the PDF buffer
+      // FIX: Use pdf2json to reliably parse the PDF buffer
       const pdfParser = new PDFParser(this, 1);
       
       // Promise to handle the asynchronous parsing
