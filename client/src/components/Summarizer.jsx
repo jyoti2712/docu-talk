@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import ErrorBoundary from "./ErrorBoundary.jsx";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-function Summarizer({ token, documentId, setDocumentId }) {
+function Summarizer({ token, documentId, setDocumentId, summary, setSummary }) {
   const [file, setFile] = useState(null);
-  const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
@@ -60,11 +60,12 @@ function Summarizer({ token, documentId, setDocumentId }) {
       </div>
 
       {summary && (
-        <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-          {/* <h4 className="font-semibold mb-2 text-gray-700"></h4> */}
-          <p className="text-gray-800 leading-relaxed text-sm sm:text-base">
-            <ReactMarkdown>{summary}</ReactMarkdown>
-          </p>
+        <div className="mt-6 p-4 border rounded-lg bg-gray-50 text-gray-800 leading-relaxed text-sm sm:text-base">
+          <ErrorBoundary>
+            <ReactMarkdown>
+              {summary || "No summary available."}
+            </ReactMarkdown>
+          </ErrorBoundary>
         </div>
       )}
     </div>

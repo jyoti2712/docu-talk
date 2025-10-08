@@ -9,6 +9,9 @@ function App() {
   const [documentId, setDocumentId] = useState(null);
   const [view, setView] = useState("chat");
 
+  const [chatMessages, setChatMessages] = useState([]);
+  const [summaryText, setSummaryText] = useState("");
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) setToken(storedToken);
@@ -62,9 +65,9 @@ function App() {
       {/* Main */}
       <main className="max-w-4xl mx-auto mt-8 sm:mt-10 bg-white p-5 sm:p-8 rounded-2xl shadow-lg w-[95%]">
         {view === "chat" ? (
-          <Chat token={token} documentId={documentId} setDocumentId={setDocumentId} />
+          <Chat token={token} documentId={documentId} setDocumentId={setDocumentId} messages={chatMessages} setMessages={setChatMessages} />
         ) : (
-          <Summarizer token={token} documentId={documentId} setDocumentId={setDocumentId} />
+          <Summarizer token={token} documentId={documentId} setDocumentId={setDocumentId} summary={summaryText} setSummary={setSummaryText} />
         )}
       </main>
     </div>

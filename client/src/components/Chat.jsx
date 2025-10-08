@@ -4,10 +4,9 @@ import ReactMarkdown from "react-markdown";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-function Chat({ token, documentId, setDocumentId }) {
+function Chat({ token, documentId, setDocumentId, messages, setMessages }) {
   const [file, setFile] = useState(null);
   const [question, setQuestion] = useState("");
-  const [messages, setMessages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
 
